@@ -29,7 +29,8 @@ $(NAME).a: $(NAME)
 	@$(call cpheader,$(NAME))
 
 $(NAME):
-	@git clone $(REPO_PREFIX)/$(NAME)
+	@printf '\r  \033[K\033[0;35m Fetching\033[0m `$@`\n'
+	@git clone -q $(REPO_PREFIX)/$(NAME)
 	@rm -rf $(NAME)/.git
 
 clean:

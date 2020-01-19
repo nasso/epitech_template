@@ -108,8 +108,7 @@ $(OUTTEST): $(DEPSARC) $(OBJ) $(TESTOBJ)
 
 run: $(NAME)
 	@printf '\r  \033[K\033[0;32m  Running\033[0m `$(strip $(NAME) $(ARGS))`\n'
-	@./$(NAME) $(ARGS); printf '\033[0;%smExit status: %d\033[0m\n' \
-		$$( ([ $$? -eq 0 ] && echo '32') || echo '31') $$?
+	@./$(NAME) $(ARGS) || printf '\033[0;31mProgram exited with %d\033[0m\n' $$?
 
 tests_run: $(TEST)
 	@printf '\r  \033[K\033[0;32m  Running\033[0m `$(TEST)`\n'
