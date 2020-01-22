@@ -6,6 +6,7 @@
 */
 
 #include "my/my.h"
+#include "my/io.h"
 
 int main(void)
 {

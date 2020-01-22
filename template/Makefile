@@ -118,12 +118,14 @@ tests_run: $(TEST)
 clean:
 	@$(call makelibs,clean)
 	@printf '\r  \033[K\033[0;34m Cleaning\033[0m `$(NAME)`\n'
-	@rm -f $(OBJ) $(TESTOBJ) $(COVREPS) $(CPPDEPS) $(OUTNAME) $(OUTTEST)
+	@rm -f $(OBJ) $(TESTOBJ) $(MAINOBJ) $(COVREPS) $(CPPDEPS) $(OUTNAME) \
+		$(OUTTEST)
 
 fclean:
 	@$(call makelibs,fclean)
 	@printf '\r  \033[K\033[0;36m   Wiping\033[0m `$(NAME)`\n'
-	@rm -f $(OBJ) $(TESTOBJ) $(COVREPS) $(CPPDEPS) $(OUTNAME) $(OUTTEST)
+	@rm -f $(OBJ) $(TESTOBJ) $(MAINOBJ) $(COVREPS) $(CPPDEPS) $(OUTNAME) \
+		$(OUTTEST)
 	@rm -f $(NAME) $(TEST)
 	@rm -rf $(OUTDIR)
 
