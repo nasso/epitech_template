@@ -55,6 +55,7 @@ OBJ		=	$(SRC:%.c=$(OUTDIR)/%.o)
 TESTOBJ	=	$(TESTSRC:%.c=$(OUTDIR)/%.o)
 
 COVREPS	=	$(SRC:%.c=$(OUTDIR)/%.gcda) $(SRC:.c=$(OUTDIR)/%.gcno) \
+			$(MAINSRC:.c=$(OUTDIR)/%.gcda) $(MAINSRC:.c=$(OUTDIR)/%.gcno) \
 			$(TESTSRC:.c=$(OUTDIR)/%.gcda) $(TESTSRC:.c=$(OUTDIR)/%.gcno)
 
 makelibs =	$(foreach lib,$(DEPS),$(MAKE) -sC ./lib $(1) NAME=$(lib);)
