@@ -9,7 +9,8 @@ CC		?=	gcc
 
 SHELL	=	/bin/sh
 
-readcfg	=	$(strip $(shell sed -n '/^$(1):/,/^\S/s/^\s\+\-//p' Myfile.yml))
+readcfg	=	$(strip \
+				$(shell sed -n '/^$(1):/,/^\S/s/^\s\+\-\|^$(1)://p' $(MYFILE)))
 
 ALLOWED ?=	$(call readcfg,allowed)
 

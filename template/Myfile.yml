@@ -5,16 +5,14 @@
 ## This file describes the project's dependencies and allowed functions.
 ##
 
-name:
-  - {{BINARY_NAME}}
+name: {{BINARY_NAME}}
+
+dependencies: libmy
 
 allowed:
   - write
 	- malloc
   - free
-
-dependencies:
-  - libmy
 
 main:
   - ./src/main.c
