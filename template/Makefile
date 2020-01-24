@@ -9,6 +9,8 @@ CC		?=	gcc
 
 SHELL	=	/bin/sh
 
+MYFILE	=	Myfile.yml
+
 readcfg	=	$(strip \
 				$(shell sed -n '/^$(1):/,/^\S/s/^\s\+\-\|^$(1)://p' $(MYFILE)))
 
