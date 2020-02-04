@@ -9,5 +9,5 @@
 
 Test({{PROJECT_NAME}}, it_works)
 {
-    cr_assert_eq({{NAMESPACE}}_add(2, 2), 0);
+    cr_assert_eq({{NAMESPACE}}_add(2, 2), 4);
 }
