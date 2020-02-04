@@ -7,15 +7,15 @@
 
 name: {{BINARY_NAME}}
 
+type: {{BINTYPE}}
+
+namespace: {{NAMESPACE}}
+
 dependencies: libmy
 
-allowed:
-  - write
-	- malloc
-  - free
+allowed: write malloc free
 
-main:
-  - ./src/main.c
+main: ./src/main.c
 
 src:
 

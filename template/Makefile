@@ -16,6 +16,8 @@ readcfg	=	$(strip \
 
 ALLOWED ?=	$(call readcfg,allowed)
 
+BINTYPE	:=	$(call readcfg,type)
+
 DEPS	:=	$(call readcfg,dependencies)
 
 MAINSRC	:=	$(call readcfg,main)
@@ -24,9 +26,13 @@ SRC		:=	$(call readcfg,src)
 
 NAME	:=	$(call readcfg,name)
 
+NAMESPC :=	$(call readcfg,namespace)
+
 TESTSRC	:=	$(call readcfg,tests_src)
 
-INCLUDE =	-I./include -I./lib/include
+LIBDIR	?=	$(abspath ./lib)
+
+INCLUDE =	-I$(OUTDIR)/include -I$(LIBDIR)/include
 
 CFLAGS	=	-fdiagnostics-color -fno-builtin -W -Wall -Wextra -pedantic \
 			$(INCLUDE) $(if $(DEBUG),-g3) \
@@ -34,8 +40,6 @@ CFLAGS	=	-fdiagnostics-color -fno-builtin -W -Wall -Wextra -pedantic \
 				$(shell echo $(ALLOWED) | tr a-z A-Z)))
 
 CPPFLAGS =	-MD -MP
-
-LIBDIRS =	-L./lib
 
 LIBS	=	$(DEPS:lib%=-l%)
 
@@ -49,7 +53,7 @@ OUTTEST	=	$(OUTDIR)/$(TEST)
 
 CPPDEPS	=	$(SRC:%.c=$(OUTDIR)/%.d)
 
-DEPSARC	=	$(DEPS:%=./lib/%.a)
+DEPSARC	=	$(DEPS:%=$(LIBDIR)/%.a)
 
 MAINOBJ	:=	$(MAINSRC:%.c=$(OUTDIR)/%.o)
 
@@ -61,7 +65,8 @@ COVREPS	=	$(SRC:%.c=$(OUTDIR)/%.gcda) $(SRC:.c=$(OUTDIR)/%.gcno) \
 			$(MAINSRC:.c=$(OUTDIR)/%.gcda) $(MAINSRC:.c=$(OUTDIR)/%.gcno) \
 			$(TESTSRC:.c=$(OUTDIR)/%.gcda) $(TESTSRC:.c=$(OUTDIR)/%.gcno)
 
-makelibs =	$(foreach lib,$(DEPS),$(MAKE) -sC ./lib $(1) NAME=$(lib);)
+makelibs =	$(foreach lib,$(DEPS),$(MAKE) -sC $(LIBDIR) $(1) \
+				NAME=$(lib) LIBDIR=$(LIBDIR);)
 
 export CC
 
@@ -75,30 +80,53 @@ all: $(NAME)
 
 info:
 	@echo "\033[0;32mname:\033[0m" $(NAME)
-	@echo "\033[0;32mmain:\033[0m" $(MAINSRC)
+	@echo "\033[0;32mtype:\033[0m" $(BINTYPE)
+	@echo "\033[0;32mnamespace:\033[0m" $(NAMESPC)
 	@echo -n "\033[0;32mallowed:\033[0m"
 	@for fn in $(ALLOWED); do echo -n " $$fn"; done
 	@echo
 	@echo -n "\033[0;32mdependencies:\033[0m"
 	@for dep in $(DEPS); do echo -n " $$dep"; done
 	@echo
-	@echo "\033[0;32msrc:\033[0m" $(shell echo $(SRC) | wc -w) 'file(s)'
-	@echo "\033[0;32mtests:\033[0m" $(shell echo $(TESTSRC) | wc -w) 'file(s)'
+	@echo "\033[0;32mmain:\033[0m" $(MAINSRC)
+	@echo -n "\033[0;32msrc:\033[0m"
+	@if [ '$(VERBOSE)' ]; then \
+		for f in $(SRC); do echo -n "\n - $$f"; done; \
+		echo; \
+	else \
+		echo '' $(shell echo $(SRC) | wc -w) 'file(s)'; \
+	fi
+	@echo -n "\033[0;32mtests:\033[0m"
+	@if [ '$(VERBOSE)' ]; then \
+		for f in $(TESTSRC); do echo -n "\n - $$f"; done; \
+		echo; \
+	else \
+		echo '' $(shell echo $(TESTSRC) | wc -w) 'file(s)'; \
+	fi
 
 $(NAME): $(OUTNAME)
 	@cp $< $@
 
 $(OUTNAME): $(DEPSARC) $(OBJ) $(MAINOBJ)
-	@$(CC) $(CFLAGS) -o $@ $(OBJ) $(MAINOBJ) $(LIBDIRS) $(LIBS)
+	@if [ '$(BINTYPE)' = 'bin' ]; then \
+		$(CC) $(CFLAGS) -o $@ $(OBJ) $(MAINOBJ) $(LIBDIR:%=-L%) $(LIBS); \
+	fi
+	@if [ '$(BINTYPE)' = 'lib' ]; then \
+		ar -rc $@ $(OBJ); \
+	fi
 	@printf '\r  \033[K\033[0;32m Finished\033[0m `%s`\n' "$@"
 
 $(DEPSARC):
 	@$(call makelibs,all)
 
-$(OUTDIR)/%.o: %.c
+$(OUTDIR)/%.o: %.c | $(OUTDIR)
 	@printf '\r  \033[K\033[0;32mCompiling\033[0m `$<`\n'
 	@mkdir -p $(dir $@)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(OUTDIR):
+	@mkdir -p $@/include
+	@ln -s $(abspath ./include) $@/include/$(NAMESPC)
 
 $(TEST): $(OUTTEST)
 	@cp $(OUTTEST) $(TEST)
@@ -106,7 +134,7 @@ $(TEST): $(OUTTEST)
 $(OUTTEST): CFLAGS += --coverage
 $(OUTTEST): LIBS += -lcriterion
 $(OUTTEST): $(DEPSARC) $(OBJ) $(TESTOBJ)
-	@$(CC) $(CFLAGS) -o $@ $(OBJ) $(TESTOBJ) $(LIBDIRS) $(LIBS)
+	@$(CC) $(CFLAGS) -o $@ $(OBJ) $(TESTOBJ) $(LIBDIR:%=-L%) $(LIBS)
 	@printf '\r  \033[K\033[0;32m Finished\033[0m %s test build\n' \
 		$(if $(DEBUG),'debug','release')
 

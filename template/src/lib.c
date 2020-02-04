@@ -6,10 +6,8 @@
 */
 
 #include "my/my.h"
-#include "my/io.h"
 
-int main(void)
+i32_t {{NAMESPACE}}_add(i32_t a, i32_t b)
 {
-    my_printf("Hello, World!\n");
-    return (0);
+    return (a + b);
 }
