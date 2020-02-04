@@ -6,6 +6,7 @@
 */
 
 #include <criterion/criterion.h>
+#include "{{NAMESPACE}}/{{NAMESPACE}}.h"
 
 Test({{PROJECT_NAME}}, it_works)
 {
