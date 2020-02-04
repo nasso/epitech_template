@@ -7,7 +7,7 @@
 
 #include <criterion/criterion.h>
 
-Test({{BINARY_NAME}}, it_works)
+Test({{PROJECT_NAME}}, it_works)
 {
     cr_assert_eq({{NAMESPACE}}_add(2, 2), 0);
 }
