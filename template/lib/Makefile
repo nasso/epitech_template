@@ -7,7 +7,7 @@
 
 REPO_PREFIX	=	git@github.com:nasso
 
-makelib		=	$(MAKE) -sC $(1) $(2) NAME=../$(1).a;
+makelib		=	$(MAKE) -sC $(1) $(2) NAME=$(abspath ./$(1).a);
 
 cpheader	=	mkdir -p ./include/$(1:lib%=%); \
 				cp -rf ./$(1)/include/* ./include/$(1:lib%=%);
