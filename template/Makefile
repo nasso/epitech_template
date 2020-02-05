@@ -110,11 +110,12 @@ $(NAME): $(OUTNAME)
 $(OUTNAME): $(DEPSARC) $(OBJ) $(MAINOBJ)
 	@if [ '$(BINTYPE)' = 'bin' ]; then \
 		$(CC) $(CFLAGS) -o $@ $(OBJ) $(MAINOBJ) $(LIBDIR:%=-L%) $(LIBS); \
+		printf '\r  \033[K\033[0;32m Finished\033[0m `%s` (binary)\n' "$@"; \
 	fi
 	@if [ '$(BINTYPE)' = 'lib' ]; then \
 		ar -rc $@ $(OBJ); \
+		printf '\r  \033[K\033[0;32m Finished\033[0m `%s` (library)\n' "$@"; \
 	fi
-	@printf '\r  \033[K\033[0;32m Finished\033[0m `%s`\n' "$@"
 
 $(DEPSARC):
 	@$(call makelibs,all)
