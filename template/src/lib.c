@@ -7,7 +7,7 @@
 
 #include "my/my.h"
 
-i32_t {{NAMESPACE}}_add(i32_t a, i32_t b)
+i32_t {{PREFIX}}_add(i32_t a, i32_t b)
 {
     return (a + b);
 }
