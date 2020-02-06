@@ -12,4 +12,4 @@
 
 i32_t {{PREFIX}}_add(i32_t, i32_t);
 
-#endif /* {{PROJECT_NAME}}_H */
+#endif /* {{upper PROJECT_NAME}}_H */
