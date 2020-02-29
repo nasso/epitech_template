@@ -11,7 +11,8 @@ type: {{BINTYPE}}
 
 namespace: {{NAMESPACE}}
 
-dependencies: libmy
+dependencies:
+  - libmy=master
 
 allowed: write malloc free
 
